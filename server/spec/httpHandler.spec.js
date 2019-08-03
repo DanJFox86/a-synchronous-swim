@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const expect = require('chai').expect;
 const server = require('./mockServer');
+const validMessages = require('../js/keypressHandler').validMessages;
+
 
 const httpHandler = require('../js/httpHandler');
 
@@ -10,7 +12,7 @@ const httpHandler = require('../js/httpHandler');
 
 describe('server responses', () => {
 
-  it('should respond to a OPTIONS request', (done) => {
+  xit('should respond to a OPTIONS request', (done) => {
     let {req, res} = server.mock('/', 'OPTIONS');
 
     httpHandler.router(req, res);
@@ -23,6 +25,14 @@ describe('server responses', () => {
 
   it('should respond to a GET request for a swim command', (done) => {
     // write your test here
+
+    let {req, res} = server.mock('/messages', 'GET');
+    httpHandler.router(req, res);
+
+    expect(res._responseCode).to.equal(200);
+    expect(res._ended).to.equal(true);
+    console.log(JSON.stringify(res._data))
+    expect(validMessages).to.include(res._data.toString());
     done();
   });
 
