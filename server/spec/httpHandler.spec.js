@@ -31,7 +31,7 @@ describe('server responses', () => {
 
     expect(res._responseCode).to.equal(200);
     expect(res._ended).to.equal(true);
-    console.log(JSON.stringify(res._data))
+    console.log(res._data.toString());
     expect(validMessages).to.include(res._data.toString());
     done();
   });

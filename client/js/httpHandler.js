@@ -1,3 +1,5 @@
+// const swimTeam = require('./swimTeam');
+
 (function() {
 
   const serverUrl = 'http://127.0.0.1:3000';
@@ -33,8 +35,8 @@
       contentType: 'text/plain',
       success: function (data) {
         // send data to be used to move the fishies
+        SwimTeam.move(data);
         setTimeout(fetchMessages, 1000);
-        console.log(`getting info: ${data}`);
       }
     });
   };

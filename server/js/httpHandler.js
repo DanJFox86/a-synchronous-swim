@@ -5,6 +5,8 @@ const validMessages = require('./keypressHandler').validMessages;
 
 const multipart = require('./multipartUtils');
 
+const messages = require('./messageQueue');
+
 // Path for the background image ///////////////////////
 module.exports.backgroundImageFile = path.join('.', 'background.jpg');
 ////////////////////////////////////////////////////////
@@ -16,21 +18,27 @@ module.exports.initialize = (queue) => {
 
 module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
-  var randomCommand = validMessages[Math.floor(Math.random() * (validMessages.length - 1))];
-  console.log(randomCommand);
+  var randomCommand = req.method === 'GET' ? validMessages[Math.floor(Math.random() * (validMessages.length - 1))] : '';
+
+
+
+  // for (var i = 0; i < randomCommand.length; i++) {
+  //   randomCommandData.push(randomCommand.charCodeAt(i));
+  // }
+
+  // console.log(randomCommand);
   //parsed the req.url to get identifier for info it wants to 'get'
   // req.url => 'identifier'
   // console.log(req.url);
 
-
-  var identifier = req.url.slice(1);
   // if (req.url.includes('messages')) {
   //   if (req.method === 'GET') {
-      res.write(randomCommand);
+
   //   }
   // }
-
+  // res.write(randomCommand);
+  //console.log(typeof randomCommand);
   res.writeHead(200, headers);
-  res.end();
+  res.end(randomCommand);
   next(); // invoke next() at the end of a request to help with testing!
 };
