@@ -4,6 +4,7 @@
 
   const serverUrl = 'http://127.0.0.1:3000';
   const messageUrl = 'http://127.0.0.1:3000/messages';
+  const imageUrl = 'http://127.0.0.1:3000/backgroundImages';
 
   //
   // TODO: build the swim command fetcher here
@@ -27,21 +28,15 @@
     });
   }
 
-  const fetchMessages = () => {
-
+  const fetchMessages = (url, contentType, successCB) => {
     $.ajax({
-      url: messageUrl,
+      url: url,
       type: 'GET',
-      contentType: 'text/plain',
-      success: function (data) {
-        // send data to be used to move the fishies
-        SwimTeam.move(data);
-        setTimeout(fetchMessages, 1000);
-      }
+      contentType: contentType,
+      success: successCB,
+      error: () => {console.log("failed!")}
     });
   };
-
-
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
   // Note: remember to fix the URL below.
@@ -82,6 +77,22 @@
     ajaxFileUplaod(file);
   });
 
-  fetchMessages();
+  var getMessagesCB = function (data) {
+    // send data to be used to move the fishies
+    console.log(`here is the data we are receiving: ${data}`);
+    SwimTeam.move(data);
+    setTimeout(fetchMessages.bind(this, messageUrl, 'text/plain', getMessagesCB), 10000);
+  }
+  // fetchMessages(messageUrl, 'text/plain', getMessagesCB);
+  var formData = new FormData();
+
+  var imageCB = function (data) {
+    var file = multipart.getFile(data);
+    console.log(file.filename);
+    $('.background').css({ 'background-image': file});
+  }
+
+
+  // fetchMessages(imageUrl, 'multipart/form-data', imageCB);
 
 })();

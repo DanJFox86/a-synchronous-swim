@@ -4,7 +4,7 @@ const expect = require('chai').expect;
 
 const multipart = require('../js/multipartUtils');
 
-describe('server responses', () => {
+xdescribe('server responses', () => {
 
   it('should find the boundary', (done) => {
     var filename = path.join('.', 'spec', 'water-lg.multipart');

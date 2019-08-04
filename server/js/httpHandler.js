@@ -18,27 +18,52 @@ module.exports.initialize = (queue) => {
 
 module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
-  var randomCommand = req.method === 'GET' ? validMessages[Math.floor(Math.random() * (validMessages.length - 1))] : '';
-
-
-
-  // for (var i = 0; i < randomCommand.length; i++) {
-  //   randomCommandData.push(randomCommand.charCodeAt(i));
-  // }
-
-  // console.log(randomCommand);
-  //parsed the req.url to get identifier for info it wants to 'get'
-  // req.url => 'identifier'
-  // console.log(req.url);
-
-  // if (req.url.includes('messages')) {
-  //   if (req.method === 'GET') {
-
-  //   }
-  // }
-  // res.write(randomCommand);
-  //console.log(typeof randomCommand);
-  res.writeHead(200, headers);
-  res.end(randomCommand);
-  next(); // invoke next() at the end of a request to help with testing!
+  var command = '';
+  if (req.method === 'GET' ){
+    if (req.url.includes('messages')) {
+      if (req.url.includes('random')) {
+        command = validMessages[Math.floor(Math.random() * validMessages.length)];
+        res.writeHead(200, headers);
+        res.end(command);
+        next();
+      }
+      command = messages.dequeue();
+      res.writeHead(200, headers);
+      res.end(command);
+      next();
+    }
+    if (req.url.includes('jpg')) {
+      if (!req.url.includes(module.exports.backgroundImageFile)) {
+        res.writeHead(404, headers);
+        res.end();
+        next();
+      } else {
+        if (req.url === '/background.jpg') {
+          res.writeHead(200, headers);
+          console.log(req.url);
+          fs.readFile(module.exports.backgroundImageFile, (err, fileData) => {
+            console.log(fileData);
+            if (err) {
+              console.log(err);
+            } else {
+              res.write(fileData);
+            }
+            res.end();
+            next();
+          });
+        } else {
+          res.writeHead(200, headers);
+          fs.readFile(req.url, (err, fileData) => {
+            res.end(fileData);
+            next();
+          });
+        }
+      }
+    }
+  } else if (req.method === 'OPTIONS') {
+    res.writeHead(200, headers);
+    res.end();
+    next();
+  }
+  // invoke next() at the end of a request to help with testing!
 };

@@ -69,5 +69,3 @@ const SwimTeam = {
   }
 
 };
-
-module.exports.SwimTeam = SwimTeam;
